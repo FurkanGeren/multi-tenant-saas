@@ -1,19 +1,15 @@
 package org.saas.core.tenant;
 
-
 import com.zaxxer.hikari.HikariDataSource;
-import jakarta.annotation.PostConstruct;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.stereotype.Component;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-// core-module/src/main/java/org/saas/core/tenant/SchemaBasedMultiTenantConnectionProvider.java
+@Component
 public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
 
     private final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();

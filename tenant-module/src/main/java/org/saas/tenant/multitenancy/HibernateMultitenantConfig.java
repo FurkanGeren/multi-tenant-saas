@@ -2,10 +2,9 @@ package org.saas.tenant.multitenancy;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.saas.core.tenant.MultiTenantConnectionProviderImpl;
 import org.saas.core.tenant.SchemaTenantIdentifierResolver;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.*;
 import org.springframework.orm.jpa.*;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -20,11 +19,6 @@ public class HibernateMultitenantConfig {
 
     public HibernateMultitenantConfig(JpaProperties jpaProperties) {
         this.jpaProperties = jpaProperties;
-    }
-
-    @Bean
-    public MultiTenantConnectionProvider multiTenantConnectionProvider(DataSource dataSource) {
-        return new MultiTenantConnectionProviderImpl(dataSource);
     }
 
     @Bean

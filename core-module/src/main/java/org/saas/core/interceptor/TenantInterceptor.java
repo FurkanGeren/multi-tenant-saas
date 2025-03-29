@@ -1,4 +1,4 @@
-package org.saas.user.adapter;
+package org.saas.core.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,5 +17,10 @@ public class TenantInterceptor implements HandlerInterceptor {
             TenantContext.setTenantSchema(tenantId);
         }
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        TenantContext.clear();
     }
 }

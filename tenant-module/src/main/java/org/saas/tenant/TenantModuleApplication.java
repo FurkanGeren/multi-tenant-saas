@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages = "org.saas")
-@EnableJpaAuditing
+@SpringBootApplication(scanBasePackages = {
+        "org.saas.core",
+        "org.saas.tenant"
+})@EnableJpaAuditing
 @EntityScan(basePackages = {
         "org.saas.tenant.entity",
         "org.saas.core.domain"
