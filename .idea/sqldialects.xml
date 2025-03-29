@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/tenant-module/src/main/java/org/saas/tenant/service/impl/TenantServiceImpl.java" dialect="GenericSQL" />
+  </component>
+</project>

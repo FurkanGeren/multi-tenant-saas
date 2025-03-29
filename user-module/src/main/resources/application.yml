@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/db_multi_tenant
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        multiTenancy: SCHEMA
+        tenant_identifier_resolver: org.saas.tenant.multitenancy.CurrentTenantIdentifierResolverImpl
+        multi_tenant_connection_provider: org.saas.core.tenant.SchemaBasedMultiTenantConnectionProvider
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000

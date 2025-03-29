@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/db_multi_tenant
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        multi_tenant_connection_provider: org.saas.tenant.multitenancy.SchemaBasedMultiTenantConnectionProvider
+        current_session_context_class: org.hibernate.context.internal.ThreadLocalSessionContext
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
