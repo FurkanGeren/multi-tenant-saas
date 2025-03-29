@@ -1,6 +1,7 @@
 package org.saas.user.service.impl;
 import org.saas.core.domain.SubscriptionInfo;
 import org.saas.core.exception.BusinessException;
+import org.saas.core.tenant.TenantContext;
 import org.saas.core.tenant.TenantInfoProvider;
 import org.saas.user.dto.CreateUserRequest;
 import org.saas.user.dto.UserResponse;
@@ -27,7 +28,13 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(CreateUserRequest request) {
         SubscriptionInfo tenant = tenantInfoProvider.getCurrentTenantInfo();
 
-        System.out.println(tenant.tenantName());
+        TenantContext.setTenantSchema(tenant.schema());
+
+
+        System.out.println("Tenant Name: " + tenant.tenantName());
+        System.out.println("Schema: " + tenant.schema());
+        System.out.println("Max Users: " + tenant.maxUsers());
+
 
         long currentUserCount = userRepository.count();
         if (currentUserCount >= tenant.maxUsers()) {

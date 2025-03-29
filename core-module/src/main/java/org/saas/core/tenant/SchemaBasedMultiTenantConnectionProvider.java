@@ -1,6 +1,7 @@
 package org.saas.core.tenant;
 
 
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.PostConstruct;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -12,23 +13,25 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+// core-module/src/main/java/org/saas/core/tenant/SchemaBasedMultiTenantConnectionProvider.java
 public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
 
     private final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
+
+
+    public SchemaBasedMultiTenantConnectionProvider() {
+        createAndAddDataSourceForTenant("public");
+    }
 
     public void addDataSource(String tenantIdentifier, DataSource dataSource) {
         dataSources.put(tenantIdentifier, dataSource);
     }
 
-
     @Override
     public Connection getAnyConnection() throws SQLException {
-        if (dataSources.isEmpty()) {
-            throw new IllegalStateException("Hiçbir tenant için bağlantı yok.");
-        }
+        if (dataSources.isEmpty()) throw new IllegalStateException("Hiçbir tenant için bağlantı yok.");
         return dataSources.values().iterator().next().getConnection();
     }
-
 
     @Override
     public void releaseAnyConnection(Connection connection) throws SQLException {
@@ -37,19 +40,37 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
 
     @Override
     public Connection getConnection(Object tenantIdentifier) throws SQLException {
-        String schema = tenantIdentifier.toString();
-        DataSource dataSource = dataSources.get(schema);
+        String tenantId = tenantIdentifier.toString();
+
+        DataSource dataSource = dataSources.get(tenantId);
         if (dataSource == null) {
-            throw new RuntimeException("Tenant için datasource bulunamadı: " + schema);
+            // Burada yeni datasource oluştur
+            dataSource = createAndAddDataSourceForTenant(tenantId);
         }
+
         return dataSource.getConnection();
     }
+
+    private DataSource createAndAddDataSourceForTenant(String schema) {
+        // Her tenant için ayrı bir schema ama aynı DB
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5433/db_multi_tenant");
+        dataSource.setUsername("postgres");
+        dataSource.setPassword("postgres");
+        dataSource.setDriverClassName("org.postgresql.Driver");
+
+        // Tenant'a özel schema'yı set etmek için PostgreSQL'in bu özelliğini kullan
+        dataSource.setConnectionInitSql("SET search_path TO " + schema);
+
+        dataSources.put(schema, dataSource);
+        return dataSource;
+    }
+
 
     @Override
     public void releaseConnection(Object tenantIdentifier, Connection connection) throws SQLException {
         connection.close();
     }
-
 
     @Override
     public boolean supportsAggressiveRelease() {
@@ -69,5 +90,4 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
             throw new IllegalArgumentException("Unwrap yapılamıyor: " + unwrapType);
         }
     }
-
 }

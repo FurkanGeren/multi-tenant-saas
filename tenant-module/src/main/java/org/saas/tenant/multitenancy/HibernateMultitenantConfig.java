@@ -40,13 +40,12 @@ public class HibernateMultitenantConfig {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            EntityManagerFactoryBuilder builder,
             DataSource dataSource,
             MultiTenantConnectionProvider multiTenantConnectionProvider,
             CurrentTenantIdentifierResolver tenantIdentifierResolver
     ) {
+
         Map<String, Object> jpaPropertiesMap = new HashMap<>(jpaProperties.getProperties());
-       // jpaPropertiesMap.put(Environment.MULTI_TENANT, MultiTenancyStrategy.DATABASE);
 
         jpaPropertiesMap.put("hibernate.multiTenancy", "SCHEMA");
         jpaPropertiesMap.put("hibernate.multi_tenant_connection_provider", multiTenantConnectionProvider);
@@ -59,11 +58,6 @@ public class HibernateMultitenantConfig {
         em.setJpaVendorAdapter(this.jpaVendorAdapter());
         em.setJpaPropertyMap(jpaPropertiesMap);
         return em;
-      /*  return builder
-                .dataSource(dataSource)
-                .packages("org.saas") // Entity'lerin ana paketi
-                .persistenceUnit("multiTenantPU")
-                .properties(jpaPropertiesMap)
-                .build(); */
+
     }
 }

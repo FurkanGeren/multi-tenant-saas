@@ -1,16 +1,18 @@
 package org.saas.core.tenant;
 
+
 public class TenantContext {
-    private static final ThreadLocal<String> TENANT_SCHEMA = new ThreadLocal<>();
+    private static final ThreadLocal<String> currentTenant = new ThreadLocal<>();
 
     public static void setTenantSchema(String schema) {
-        TENANT_SCHEMA.set(schema);
+        currentTenant.set(schema);
     }
 
     public static String getTenantSchema() {
-        return TENANT_SCHEMA.get();
+        return currentTenant.get();
     }
 
     public static void clear() {
-        TENANT_SCHEMA.remove();
-    }}
+        currentTenant.remove();
+    }
+}

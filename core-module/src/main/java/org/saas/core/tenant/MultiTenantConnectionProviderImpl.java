@@ -1,6 +1,7 @@
 package org.saas.core.tenant;
 
 import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
+import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 

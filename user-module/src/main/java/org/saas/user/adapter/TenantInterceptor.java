@@ -1,4 +1,4 @@
-package org.saas.user.multitenancy;
+package org.saas.user.adapter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,14 +8,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class TenantInterceptor implements HandlerInterceptor {
+    private static final String TENANT_HEADER = "X-Tenant-ID";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String schema = request.getHeader("X-Tenant-ID");
-        if (schema != null && !schema.isEmpty()) {
-            TenantContext.setTenantSchema(schema);
-        } else {
-            throw new RuntimeException("Tenant bilgisi header'da bulunamadı!");
+        String tenantId = request.getHeader(TENANT_HEADER);
+        if (tenantId != null) {
+            TenantContext.setTenantSchema(tenantId);
         }
         return true;
     }
