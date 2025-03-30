@@ -1,0 +1,37 @@
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+server:
+  port: 8084
+
+
+security:
+  jwt:
+    secret: "B6FQT28Pu2Nn73FYSdZUMCByFB4BwgaqGH33ACJ6jFdJ8J8NSMEwFMdBdtudsAzLTgEoDDop5zBXjwhsms4UgsgBXEkQW768Q232GTyB4FC6A3umwJhzrMSwkeCPX2e8GnHusx2AxP5K29b5JCkDQNNet5L2S7aJzWRB8R9E5edeDwNSdUMLJhpApuYgEGbBnxyMbUzRUPmFJbcZEJALot2opWfmcGTYW4tg4Q8THpCTAqGfm6eQwxJjbM2N6PeT"
+    expiration-ms: 3600000
+    refresh-token: 604800
+
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  datasource:
+    url: jdbc:postgresql://localhost:5433/db_multi_tenant
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

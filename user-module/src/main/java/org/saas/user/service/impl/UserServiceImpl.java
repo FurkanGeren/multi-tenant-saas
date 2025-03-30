@@ -1,5 +1,7 @@
 package org.saas.user.service.impl;
 import org.saas.core.domain.SubscriptionInfo;
+import org.saas.core.dto.AuthUser;
+import org.saas.core.dto.AuthUserRequest;
 import org.saas.core.exception.BusinessException;
 import org.saas.core.tenant.TenantContext;
 import org.saas.core.tenant.TenantInfoProvider;
@@ -55,4 +57,23 @@ public class UserServiceImpl implements UserService {
 
         return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getFullName());
     }
+
+    @Override
+    public AuthUser getByEmail(AuthUserRequest authUserRequest) {
+       // SubscriptionInfo tenant = tenantInfoProvider.getCurrentTenantInfo();
+        //TenantContext.setTenantSchema(authUserRequest.schema());
+
+        User user = userRepository.findByEmail(authUserRequest.email())
+                .orElseThrow(() -> new RuntimeException("/hataaa")); // TODO
+
+        if (!user.getPassword().equals(authUserRequest.password())) {
+            throw new RuntimeException("Hata"); // TODO
+        }
+
+        TenantContext.clear();
+        return new AuthUser(user.getId(),
+                user.getEmail(),
+                user.getPassword());
+    }
+
 }

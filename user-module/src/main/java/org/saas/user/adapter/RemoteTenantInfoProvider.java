@@ -5,7 +5,6 @@ import org.saas.core.tenant.TenantContext;
 import org.saas.core.tenant.TenantInfoProvider;
 import org.saas.user.client.TenantClient;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class RemoteTenantInfoProvider implements TenantInfoProvider {
