@@ -1,6 +1,5 @@
 server:
-  port: 8081
-
+  port: 8086
 
 spring:
   datasource:
@@ -12,15 +11,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         multiTenancy: SCHEMA
         multi_tenant_connection_provider: org.saas.core.tenant.SchemaBasedMultiTenantConnectionProvider
-        current_tenant_identifier_resolver: org.saas.core.tenant.SchemaTenantIdentifierResolver
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        current_tenant_identifier_resolver: org.saas.audit.config.SchemaTenantIdentifierResolver
