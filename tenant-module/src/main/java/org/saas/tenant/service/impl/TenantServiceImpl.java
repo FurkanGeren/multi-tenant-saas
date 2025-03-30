@@ -145,6 +145,8 @@ public class TenantServiceImpl implements TenantService {
         );
     }
 
+
+
     private TenantResponse mapToResponse(Tenant tenant) {
         return new TenantResponse(
                 tenant.getId(),

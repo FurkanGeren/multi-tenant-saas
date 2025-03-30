@@ -13,7 +13,7 @@ spring:
       hibernate:
         format_sql: true
         multi_tenant_connection_provider: org.saas.core.tenant.SchemaBasedMultiTenantConnectionProvider
-        current_session_context_class: org.hibernate.context.internal.ThreadLocalSessionContext
+
 
 feign:
   client:

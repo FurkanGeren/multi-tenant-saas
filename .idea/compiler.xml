@@ -9,6 +9,7 @@
         <module name="core" />
         <module name="auth" />
         <module name="audit" />
+        <module name="main" />
         <module name="user" />
         <module name="tenant-module" />
         <module name="reporting" />
@@ -27,6 +28,7 @@
       <module name="audit" options="-parameters" />
       <module name="auth" options="-parameters" />
       <module name="core" options="" />
+      <module name="main" options="-parameters" />
       <module name="reporting" options="-parameters" />
       <module name="tenant-module" options="" />
       <module name="user" options="-parameters" />

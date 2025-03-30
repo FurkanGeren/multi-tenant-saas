@@ -19,8 +19,11 @@ import java.util.Map;
 @Configuration
 public class HibernateConfig {
 
-    @Autowired
-    private JpaProperties jpaProperties;
+    private final JpaProperties jpaProperties;
+
+    public HibernateConfig(JpaProperties jpaProperties) {
+        this.jpaProperties = jpaProperties;
+    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
