@@ -47,4 +47,9 @@ public class AuthServiceImpl implements AuthService {
     public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
         return refreshTokenService.refreshAccessToken(request);
     }
+
+    @Override
+    public void logout(String refreshToken) {
+        refreshTokenService.logout(refreshToken);
+    }
 }

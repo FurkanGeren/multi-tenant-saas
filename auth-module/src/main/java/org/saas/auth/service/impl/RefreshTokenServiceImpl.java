@@ -58,17 +58,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     }
 
-  /*  @Override
-    public RefreshTokenResponse refreshAccessToken(RefreshTokenRequest request) {
-        AuthUser user = refreshTokenStore.get(request.refreshToken());
-
-        if (user == null) {
-            throw new RuntimeException("Refresh token geçersiz veya süresi dolmuş.");
+    @Override
+    public void logout(String refreshToken) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(refreshToken))) {
+            redisTemplate.delete(refreshToken);
         }
-
-        String newAccessToken = jwtTokenProvider.generateToken(user);
-        return new RefreshTokenResponse(newAccessToken, request.refreshToken());
-    } */
+        //redisTemplate.delete(refreshToken);
+    }
+    
 
     private String generateRandomRefreshToken() {
         return java.util.UUID.randomUUID().toString();
