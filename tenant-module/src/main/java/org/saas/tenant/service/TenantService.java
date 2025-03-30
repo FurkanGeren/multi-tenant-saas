@@ -24,4 +24,5 @@ public interface TenantService {
 
     SubscriptionInfo getTenantInfoBySchema(String schemaName);
 
+    SubscriptionPlan getPlanForTenant(String tenantId);
 }

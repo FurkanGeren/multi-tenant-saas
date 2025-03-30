@@ -12,12 +12,11 @@ public class InternalApiInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String path = request.getRequestURI();
 
-        if (path.startsWith("/internal/") && !"127.0.0.1".equals(request.getRemoteAddr())) {
+        if (path.startsWith("/api/internal/") && !"127.0.0.1".equals(request.getRemoteAddr())) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getWriter().write("Erişim yasak");
             return false;
         }
-
         return true;
     }
 }

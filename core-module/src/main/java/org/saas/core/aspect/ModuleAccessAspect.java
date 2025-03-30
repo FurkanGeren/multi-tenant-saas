@@ -5,20 +5,21 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.saas.core.annotation.ModuleAccess;
-import org.saas.core.config.ModuleAccessResolver;
+import org.saas.core.config.ModuleAccessResolverFeignClient;
 import org.saas.core.domain.enums.ModuleType;
 import org.saas.core.exception.BusinessException;
 import org.saas.core.tenant.TenantContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 public class ModuleAccessAspect {
 
-    private final ModuleAccessResolver moduleAccessResolver;
+    private final ModuleAccessResolverFeignClient moduleAccessResolver;
 
-
-    public ModuleAccessAspect(ModuleAccessResolver moduleAccessResolver) {
+    @Autowired
+    public ModuleAccessAspect(ModuleAccessResolverFeignClient moduleAccessResolver) {
         this.moduleAccessResolver = moduleAccessResolver;
     }
 
@@ -31,9 +32,9 @@ public class ModuleAccessAspect {
         ModuleType moduleType = moduleAccess.value();
         String tenantId = TenantContext.getTenantSchema();
 
-        System.out.println("🔥 AOP Triggered — Tenant: " + tenantId + ", Module: " + moduleType);
+        System.out.println("🔥 AOP Triggered — Tenant: " + tenantId + ", Module: " + moduleType.name());
 
-        if (!moduleAccessResolver.isModuleEnabledForTenant(tenantId, moduleType)) {
+        if (!moduleAccessResolver.isModuleEnabledForTenant(tenantId, moduleType.name())) {
             throw new BusinessException("Tenant '" + tenantId + "' has no access to module: " + moduleType.name());
         }
     }

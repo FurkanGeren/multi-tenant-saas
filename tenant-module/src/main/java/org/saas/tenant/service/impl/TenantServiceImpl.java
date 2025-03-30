@@ -145,6 +145,12 @@ public class TenantServiceImpl implements TenantService {
         );
     }
 
+    @Override
+    public SubscriptionPlan getPlanForTenant(String tenantId) {
+        return tenantRepository.findByDatabaseName(tenantId)
+                .map(Tenant::getSubscriptionPlan)
+                .orElseThrow(() -> new BusinessException("Subscription plan not found for tenant: " + tenantId));
+    }
 
 
     private TenantResponse mapToResponse(Tenant tenant) {

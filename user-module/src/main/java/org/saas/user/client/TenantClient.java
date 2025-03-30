@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "tenantClient", url = "http://localhost:8080") // tenant-module'ın base URL’i
+@FeignClient(name = "tenantClient", url = "http://localhost:8080")
 public interface TenantClient {
 
     @GetMapping("/api/tenants/internal/{schema}/info")

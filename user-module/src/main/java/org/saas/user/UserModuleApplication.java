@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
         "org.saas.user"
 })
 @EnableFeignClients(basePackages = "org.saas.user.client")
+@EnableJpaAuditing
 @ComponentScan(basePackages = {"org.saas.core", "org.saas.user"})
 public class UserModuleApplication {
 

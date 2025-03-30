@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/test")
-    @ModuleAccess(ModuleType.INTEGRATION)
+    @ModuleAccess(ModuleType.USER)
     public String test() {
         return "Accessed!";
     }
