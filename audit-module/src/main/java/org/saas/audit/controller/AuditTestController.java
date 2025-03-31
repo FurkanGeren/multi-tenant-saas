@@ -1,7 +1,7 @@
-package org.saas.audit;
+package org.saas.audit.controller;
 
 
-import org.saas.core.AuditLogger;
+import org.saas.core.audit.AuditLogger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +16,5 @@ public class AuditTestController {
         this.auditLogger = auditLogger;
     }
 
-    @GetMapping("/test-audit")
-    public String testAudit() {
-        auditLogger.log("furkan", "TEST", "Audit", "Deneme loglama");
-        return "Audit log yazıldı!";
-    }
+
 }

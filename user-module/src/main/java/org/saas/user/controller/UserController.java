@@ -2,6 +2,7 @@ package org.saas.user.controller;
 
 
 import jakarta.validation.Valid;
+import org.saas.core.annotation.Auditable;
 import org.saas.core.annotation.ModuleAccess;
 import org.saas.core.domain.enums.ModuleType;
 import org.saas.user.dto.CreateUserRequest;
@@ -22,6 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
+    @Auditable(action = "CREATE", resource = "User")
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
         UserResponse createdUser = userService.createUser(request);
         return ResponseEntity.ok(createdUser);

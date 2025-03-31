@@ -1,0 +1,46 @@
+package org.saas.core.audit;
+
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.saas.core.annotation.Auditable;
+import org.saas.core.tenant.TenantContext;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+
+@Aspect
+@Component
+public class AuditAspect {
+
+    private final AuditLogger auditLogger;
+
+    public AuditAspect(AuditLogger auditLogger) {
+        this.auditLogger = auditLogger;
+    }
+
+
+
+    @AfterReturning(pointcut = "@annotation(org.saas.core.annotation.Auditable)", returning = "result")
+    public void logAudit(JoinPoint joinPoint, Object result) {
+        System.out.println("🚨 AuditAspect tetiklendi");
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Auditable auditable = method.getAnnotation(Auditable.class);
+
+        if (auditable != null) {
+            String actor = getCurrentActor(); // Örn: SecurityContextHolder.getContext().getAuthentication().getName()
+            String action = auditable.action();
+            String resource = auditable.resource();
+            auditLogger.log(actor, action, resource, "", TenantContext.getTenantSchema());
+        }
+    }
+
+    private String getCurrentActor() {
+        return "system";
+    }
+
+}
