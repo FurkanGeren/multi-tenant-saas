@@ -7,6 +7,8 @@ import org.saas.auth.dto.LoginResponse;
 import org.saas.auth.dto.RefreshTokenRequest;
 import org.saas.auth.dto.RefreshTokenResponse;
 import org.saas.auth.service.AuthService;
+import org.saas.core.annotation.Auditable;
+import org.saas.core.context.ActorContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +27,10 @@ public class AuthController {
 
 
     @PostMapping("/login")
+    @Auditable(action = "LOGIN", resource = "Auth")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+        LoginResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")

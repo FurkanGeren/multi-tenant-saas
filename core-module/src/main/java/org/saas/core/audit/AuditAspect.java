@@ -4,10 +4,10 @@ package org.saas.core.audit;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.saas.core.annotation.Auditable;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.ActorContext;
+import org.saas.core.context.TenantContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -32,7 +32,7 @@ public class AuditAspect {
         Auditable auditable = method.getAnnotation(Auditable.class);
 
         if (auditable != null) {
-            String actor = getCurrentActor(); // Örn: SecurityContextHolder.getContext().getAuthentication().getName()
+            String actor =  ActorContext.getActor() != null ? ActorContext.getActor() : getCurrentActor();
             String action = auditable.action();
             String resource = auditable.resource();
             auditLogger.log(actor, action, resource, "", TenantContext.getTenantSchema());

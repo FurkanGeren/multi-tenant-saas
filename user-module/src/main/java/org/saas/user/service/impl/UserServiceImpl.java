@@ -3,7 +3,7 @@ import org.saas.core.domain.SubscriptionInfo;
 import org.saas.core.dto.AuthUser;
 import org.saas.core.dto.AuthUserRequest;
 import org.saas.core.exception.BusinessException;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.saas.core.tenant.TenantInfoProvider;
 import org.saas.user.dto.CreateUserRequest;
 import org.saas.user.dto.UserResponse;
@@ -60,9 +60,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthUser getByEmail(AuthUserRequest authUserRequest) {
-       // SubscriptionInfo tenant = tenantInfoProvider.getCurrentTenantInfo();
-        //TenantContext.setTenantSchema(authUserRequest.schema());
-
         User user = userRepository.findByEmail(authUserRequest.email())
                 .orElseThrow(() -> new RuntimeException("/hataaa")); // TODO
 
@@ -70,10 +67,10 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Hata"); // TODO
         }
 
-        TenantContext.clear();
         return new AuthUser(user.getId(),
                 user.getEmail(),
-                user.getPassword());
+                user.getPassword(),
+                user.getFullName());
     }
 
 }

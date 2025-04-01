@@ -2,7 +2,7 @@ package org.saas.auth.interceptor;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.springframework.stereotype.Component;
 
 @Component

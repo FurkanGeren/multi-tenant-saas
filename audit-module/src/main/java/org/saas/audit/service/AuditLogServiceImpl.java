@@ -2,7 +2,7 @@ package org.saas.audit.service;
 
 import org.saas.audit.repository.AuditLogRepository;
 import org.saas.core.domain.AuditLog;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.springframework.stereotype.Service;
 
 @Service

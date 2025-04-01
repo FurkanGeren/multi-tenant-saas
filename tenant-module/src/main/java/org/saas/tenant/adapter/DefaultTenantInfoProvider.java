@@ -3,7 +3,7 @@ package org.saas.tenant.adapter;
 import org.saas.core.domain.SubscriptionInfo;
 import org.saas.core.tenant.TenantInfoProvider;
 import org.saas.tenant.entity.Tenant;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.saas.tenant.repository.TenantRepository;
 import org.springframework.stereotype.Component;
 

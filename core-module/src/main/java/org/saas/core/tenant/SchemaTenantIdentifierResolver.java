@@ -1,6 +1,7 @@
 package org.saas.core.tenant;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+import org.saas.core.context.TenantContext;
 
 public class SchemaTenantIdentifierResolver implements CurrentTenantIdentifierResolver {
 

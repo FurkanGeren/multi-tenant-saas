@@ -7,7 +7,7 @@ import org.saas.tenant.dto.TenantRequest;
 import org.saas.tenant.dto.TenantResponse;
 import org.saas.tenant.entity.SubscriptionPlan;
 import org.saas.tenant.entity.Tenant;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.saas.tenant.repository.SubscriptionPlanRepository;
 import org.saas.tenant.repository.TenantRepository;
 import org.saas.tenant.service.TenantService;

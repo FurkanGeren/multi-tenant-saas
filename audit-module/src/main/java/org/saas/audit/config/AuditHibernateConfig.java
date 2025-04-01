@@ -1,5 +1,5 @@
 package org.saas.audit.config;
-import org.saas.core.config.MultiTenantJpaConfig;
+import org.saas.core.tenant.MultiTenantJpaConfig;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

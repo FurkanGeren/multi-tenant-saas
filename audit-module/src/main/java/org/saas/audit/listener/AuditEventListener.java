@@ -3,9 +3,8 @@ package org.saas.audit.listener;
 import org.saas.core.config.RabbitMQConfig;
 import org.saas.core.event.AuditEvent;
 import org.saas.audit.service.AuditLogService;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +20,7 @@ public class AuditEventListener {
     @RabbitListener(queues = RabbitMQConfig.AUDIT_QUEUE)
     public void handleAuditEvent(AuditEvent event) {
         try {
-            TenantContext.setTenantSchema(event.getTenantSchema()); // 💡 tenant'ı thread'e set et
+            TenantContext.setTenantSchema(event.getTenantSchema());
             auditLogService.log(
                     event.getActor(),
                     event.getAction(),
@@ -29,7 +28,7 @@ public class AuditEventListener {
                     event.getDetails()
             );
         } finally {
-            TenantContext.clear(); // 💣 memory leak'i önlemek için her zaman temizle
+            TenantContext.clear();
         }
     }
 }

@@ -8,9 +8,10 @@ import org.saas.auth.dto.RefreshTokenResponse;
 import org.saas.auth.security.JwtTokenProvider;
 import org.saas.auth.service.AuthService;
 import org.saas.auth.service.RefreshTokenService;
+import org.saas.core.context.ActorContext;
 import org.saas.core.dto.AuthUser;
 import org.saas.core.dto.AuthUserRequest;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.springframework.stereotype.Service;
 
 
@@ -39,8 +40,9 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtTokenProvider.generateToken(authUser);
         RefreshTokenResponse refreshToken = refreshTokenService.generateTokens(authUser);
+        ActorContext.setActor(authUser.fullName());
 
-        return new LoginResponse(accessToken, refreshToken.refreshToken());
+        return new LoginResponse(authUser.fullName(), accessToken, refreshToken.refreshToken());
     }
 
     @Override

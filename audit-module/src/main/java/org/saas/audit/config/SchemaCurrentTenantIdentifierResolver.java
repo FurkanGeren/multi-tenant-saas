@@ -2,7 +2,7 @@ package org.saas.audit.config;
 
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @ComponentScan(basePackages = {
         "org.saas.tenant",
-        "org.saas.core"
+        "org.saas.core.tenant"
 })
 @EnableJpaAuditing
 @EntityScan(basePackages = {

@@ -1,7 +1,7 @@
 package org.saas.user.adapter;
 
 import org.saas.core.domain.SubscriptionInfo;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.saas.core.tenant.TenantInfoProvider;
 import org.saas.user.client.TenantClient;
 import org.springframework.stereotype.Component;

@@ -8,7 +8,7 @@ import org.saas.core.annotation.ModuleAccess;
 import org.saas.core.config.ModuleAccessResolverFeignClient;
 import org.saas.core.domain.enums.ModuleType;
 import org.saas.core.exception.BusinessException;
-import org.saas.core.tenant.TenantContext;
+import org.saas.core.context.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
