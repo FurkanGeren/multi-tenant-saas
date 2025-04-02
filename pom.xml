@@ -18,6 +18,7 @@
         <module>auth-module</module>
         <module>reporting-module</module>
         <module>audit-module</module>
+        <module>product-module</module>
     </modules>
 
     <!-- Genel Bağımlılık Versiyonları -->

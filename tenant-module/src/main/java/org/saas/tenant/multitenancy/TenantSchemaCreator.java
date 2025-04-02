@@ -5,8 +5,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator;
-import org.saas.core.domain.AuditLog;
-import org.saas.core.domain.User;
+import org.saas.core.domain.*;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -56,7 +55,11 @@ public class TenantSchemaCreator {
 
 
             metadataSources.addAnnotatedClass(User.class);
+            metadataSources.addAnnotatedClass(Role.class);
             metadataSources.addAnnotatedClass(AuditLog.class);
+            metadataSources.addAnnotatedClass(Product.class);
+            metadataSources.addAnnotatedClass(ProductAttribute.class);
+            metadataSources.addAnnotatedClass(AttributeDefinition.class);
 
 
 

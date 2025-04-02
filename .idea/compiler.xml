@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="core" />
+        <module name="product" />
         <module name="auth" />
         <module name="audit" />
         <module name="user" />
@@ -30,6 +31,7 @@
       <module name="core" options="-parameters" />
       <module name="main" options="-parameters" />
       <module name="multi-tenant-saas" options="-parameters" />
+      <module name="product" options="-parameters" />
       <module name="reporting" options="-parameters" />
       <module name="tenant-module" options="-parameters" />
       <module name="user" options="-parameters" />

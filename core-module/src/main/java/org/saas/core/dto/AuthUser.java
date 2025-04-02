@@ -4,5 +4,6 @@ public record AuthUser(
         Long id,
         String email,
         String password,
-        String fullName
+        String username,
+        String role
 ) {}

@@ -19,14 +19,27 @@ public class User extends Auditable {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
     public User() {
     }
 
-    public User(String username, String email, String fullName, String password) {
+    public User(String username, String email, String fullName, String password, Role role) {
         this.username = username;
         this.email = email;
         this.fullName = fullName;
         this.password = password;
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getUsername() {

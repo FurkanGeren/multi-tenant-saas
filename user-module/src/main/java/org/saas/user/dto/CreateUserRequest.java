@@ -11,9 +11,13 @@ public record CreateUserRequest(
         @Email(message = "Geçerli bir email adresi girin")
         String email,
 
+        @NotBlank(message = "Isim boş olamaz")
         String fullName,
 
         @NotBlank(message = "Şifre boş olamaz")
         @Size(min = 6, message = "Şifre en az 6 karakter olmalı")
-        String password
+        String password,
+
+        Long roleId
+
 ) {}

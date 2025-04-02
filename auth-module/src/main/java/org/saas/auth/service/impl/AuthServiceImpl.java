@@ -40,9 +40,9 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtTokenProvider.generateToken(authUser);
         RefreshTokenResponse refreshToken = refreshTokenService.generateTokens(authUser);
-        ActorContext.setActor(authUser.fullName());
+        ActorContext.setActor(authUser.username());
 
-        return new LoginResponse(authUser.fullName(), accessToken, refreshToken.refreshToken());
+        return new LoginResponse(authUser.username(), accessToken, refreshToken.refreshToken());
     }
 
     @Override

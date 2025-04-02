@@ -9,6 +9,7 @@ import org.saas.user.dto.CreateUserRequest;
 import org.saas.user.dto.UserResponse;
 import org.saas.user.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +23,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @PostMapping("/create")
     @Auditable(action = "CREATE", resource = "User")
+    @ModuleAccess(ModuleType.USER)
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
         UserResponse createdUser = userService.createUser(request);
         return ResponseEntity.ok(createdUser);

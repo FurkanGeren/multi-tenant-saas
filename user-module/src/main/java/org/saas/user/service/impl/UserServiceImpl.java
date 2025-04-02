@@ -1,4 +1,6 @@
 package org.saas.user.service.impl;
+import org.saas.core.context.ActorContext;
+import org.saas.core.domain.Role;
 import org.saas.core.domain.SubscriptionInfo;
 import org.saas.core.dto.AuthUser;
 import org.saas.core.dto.AuthUserRequest;
@@ -8,8 +10,10 @@ import org.saas.core.tenant.TenantInfoProvider;
 import org.saas.user.dto.CreateUserRequest;
 import org.saas.user.dto.UserResponse;
 import org.saas.core.domain.User;
+import org.saas.user.repository.RoleRepository;
 import org.saas.user.repository.UserRepository;
 import org.saas.user.service.UserService;
+import org.saas.user.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final TenantInfoProvider tenantInfoProvider;
+    private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository, TenantInfoProvider tenantInfoProvider) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, TenantInfoProvider tenantInfoProvider, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.tenantInfoProvider = tenantInfoProvider;
+        this.jwtUtil = jwtUtil;
     }
 
 
@@ -32,12 +40,6 @@ public class UserServiceImpl implements UserService {
 
         TenantContext.setTenantSchema(tenant.schema());
 
-
-        System.out.println("Tenant Name: " + tenant.tenantName());
-        System.out.println("Schema: " + tenant.schema());
-        System.out.println("Max Users: " + tenant.maxUsers());
-
-
         long currentUserCount = userRepository.count();
         if (currentUserCount >= tenant.maxUsers()) {
             throw new BusinessException("Kullanıcı limiti aşıldı. Maksimum izin verilen: " + tenant.maxUsers());
@@ -47,15 +49,22 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("Bu e-posta adresi zaten kayıtlı.");
         }
 
+
+        ActorContext.setActor(jwtUtil.extractUsername());
+
+        Role role = roleRepository.findById(request.roleId())
+                .orElseThrow();  // TODO
+
         User user = new User();
         user.setUsername(request.username());
         user.setEmail(request.email());
         user.setFullName(request.fullName());
         user.setPassword(request.password());
+        user.setRole(role);
 
         userRepository.save(user);
 
-        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getFullName());
+        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getFullName(), user.getRole().getRoleName());
     }
 
     @Override
@@ -70,7 +79,8 @@ public class UserServiceImpl implements UserService {
         return new AuthUser(user.getId(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getFullName());
+                user.getUsername(),
+                user.getRole().getRoleName());
     }
 
 }
