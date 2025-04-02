@@ -1,4 +1,4 @@
-package org.saas.user.utils;
+package org.saas.core.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 
 
 @Component

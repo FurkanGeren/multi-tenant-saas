@@ -22,7 +22,7 @@ public class AttributeDefinitionController {
         this.attributeDefinitionService = attributeDefinitionService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @Auditable(action = "CREATE", resource = "AttributeDefinition")
     @ModuleAccess(ModuleType.USER)
     public ResponseEntity<AttributeDefinitionResponse> create(@RequestBody @Valid CreateAttributeRequest request) {
@@ -30,7 +30,7 @@ public class AttributeDefinitionController {
         return ResponseEntity.ok(created);
     }
 
-    @GetMapping
+    @GetMapping("/get/all")
     @ModuleAccess(ModuleType.USER)
     public ResponseEntity<List<AttributeDefinitionResponse>> getAll() {
         return ResponseEntity.ok(attributeDefinitionService.getAll());

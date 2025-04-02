@@ -13,7 +13,7 @@ import org.saas.core.domain.User;
 import org.saas.user.repository.RoleRepository;
 import org.saas.user.repository.UserRepository;
 import org.saas.user.service.UserService;
-import org.saas.user.utils.JwtUtil;
+import org.saas.core.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -23,8 +23,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @Auditable(action = "CREATE", resource = "User")
     @ModuleAccess(ModuleType.USER)
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {

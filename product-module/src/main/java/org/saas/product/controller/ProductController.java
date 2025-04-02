@@ -8,6 +8,7 @@ import org.saas.product.dto.CreateProductRequest;
 import org.saas.product.dto.ProductResponse;
 import org.saas.product.service.ProductService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +21,8 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @Auditable(action = "CREATE", resource = "Product")
     @ModuleAccess(ModuleType.USER)
     public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid CreateProductRequest request) {
