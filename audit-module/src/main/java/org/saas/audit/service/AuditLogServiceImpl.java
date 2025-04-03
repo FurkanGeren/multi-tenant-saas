@@ -21,7 +21,6 @@ public class AuditLogServiceImpl implements AuditLogService {
 
         TenantContext.setTenantSchema(tenant);
 
-        System.out.println("Yazdiii");
         AuditLog auditLog = new AuditLog();
         auditLog.setActor(actor);
         auditLog.setAction(action);

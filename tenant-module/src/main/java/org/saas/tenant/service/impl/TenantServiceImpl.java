@@ -2,6 +2,7 @@ package org.saas.tenant.service.impl;
 
 import org.saas.core.domain.SubscriptionInfo;
 import org.saas.core.exception.BusinessException;
+import org.saas.tenant.dto.TenantFromKeyResponse;
 import org.saas.tenant.multitenancy.TenantSchemaCreator;
 import org.saas.tenant.dto.TenantRequest;
 import org.saas.tenant.dto.TenantResponse;
@@ -14,9 +15,9 @@ import org.saas.tenant.service.TenantService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.security.SecureRandom;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +36,7 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
-   // @Transactional
+    @Transactional
     public TenantResponse createTenant(TenantRequest request) {
         // 1. Tenant adı ve veritabanı adı kontrolü
         if (tenantRepository.existsByName(request.name())) {
@@ -54,8 +55,14 @@ public class TenantServiceImpl implements TenantService {
   //      entityManager.createNativeQuery("CREATE SCHEMA IF NOT EXISTS " + request.databaseName())
    //             .executeUpdate();
 
+
         // 4. Tenant'ı oluştur
         Tenant tenant = new Tenant(request.name(), request.databaseName());
+        // Tenant key oluştur ve ata
+        String generatedKey = generateTenantKey(request.name());
+        tenant.setTenantKey(generatedKey);
+
+
         tenant.setSubscriptionPlan(subscriptionPlan); // Abonelik planını set et
 
         System.out.println("Tenant kaydediliyor...");
@@ -152,6 +159,15 @@ public class TenantServiceImpl implements TenantService {
                 .orElseThrow(() -> new BusinessException("Subscription plan not found for tenant: " + tenantId));
     }
 
+    @Override
+    public TenantFromKeyResponse getTenantNameFromKey(String key) {
+        Tenant tenant = tenantRepository.findByTenantKey(key)
+                .orElseThrow(() -> new BusinessException("Geçersiz tenant anahtarı."));
+
+        return new TenantFromKeyResponse(tenant.getDatabaseName());
+
+    }
+
 
     private TenantResponse mapToResponse(Tenant tenant) {
         return new TenantResponse(
@@ -160,5 +176,26 @@ public class TenantServiceImpl implements TenantService {
                 tenant.getDatabaseName(),
                 tenant.getCreatedAt()
         );
+    }
+
+    private String generateTenantKey(String tenantName) {
+        String keyBody = generateKeyBody(); // 4 blok, her biri 5 karakter
+        return tenantName.toLowerCase() + "-" + keyBody;
+    }
+
+    private String generateKeyBody() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new SecureRandom();
+        List<String> blocks = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            StringBuilder block = new StringBuilder();
+            for (int j = 0; j < 5; j++) {
+                block.append(chars.charAt(random.nextInt(chars.length())));
+            }
+            blocks.add(block.toString());
+        }
+
+        return String.join("-", blocks);
     }
 }

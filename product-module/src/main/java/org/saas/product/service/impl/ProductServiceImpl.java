@@ -1,13 +1,14 @@
 package org.saas.product.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.saas.core.exception.NotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+import org.saas.core.context.ActorContext;
 import org.saas.core.context.TenantContext;
 import org.saas.core.domain.AttributeDefinition;
 import org.saas.core.domain.Product;
 import org.saas.core.domain.ProductAttribute;
-import org.saas.core.domain.SubscriptionInfo;
 import org.saas.core.exception.BusinessException;
-import org.saas.core.tenant.TenantInfoProvider;
+import org.saas.core.utils.JwtUtil;
 import org.saas.product.dto.AttributeResponse;
 import org.saas.product.dto.CreateProductRequest;
 import org.saas.product.dto.ProductResponse;
@@ -23,10 +24,12 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final AttributeDefinitionRepository attributeDefinitionRepository;
+    private final JwtUtil jwtUtil;
 
-    public ProductServiceImpl(ProductRepository productRepository, AttributeDefinitionRepository attributeDefinitionRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, AttributeDefinitionRepository attributeDefinitionRepository, JwtUtil jwtUtil) {
         this.productRepository = productRepository;
         this.attributeDefinitionRepository = attributeDefinitionRepository;
+        this.jwtUtil = jwtUtil;
     }
 
 
@@ -35,7 +38,6 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse createProduct(CreateProductRequest request) {
 
         setTenantSchema();
-
 
         Product product = new Product();
         product.setName(request.name());
@@ -54,12 +56,35 @@ public class ProductServiceImpl implements ProductService {
                 }).toList();
 
         product.addAttributes(attributes);
+
+        ActorContext.setActor(jwtUtil.extractUsername());
+
         productRepository.save(product);
 
         return getProductResponse(product);
     }
 
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getAllProducts() {
+        setTenantSchema();
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(this::getProductResponse)
+                .toList();
+    }
+
+    @Override
+    public ProductResponse getByIdProduct(Long id) {
+        setTenantSchema();
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Urun bulunamadi"));
+
+        return getProductResponse(product);
+    }
 
 
     // PRIVATE FUNC

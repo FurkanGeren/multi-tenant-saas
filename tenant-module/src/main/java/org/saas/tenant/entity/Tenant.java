@@ -1,7 +1,6 @@
 package org.saas.tenant.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import org.saas.core.domain.Auditable;
 
 @Entity
@@ -14,21 +13,34 @@ public class Tenant extends Auditable {
     @Column(name = "database_name", nullable = false, unique = true)
     private String databaseName;
 
+    @Column(name = "tenant_key", nullable = false, unique = true)
+    private String tenantKey;
+
     @ManyToOne
     @JoinColumn(name = "subscription_plan_id")
     private SubscriptionPlan subscriptionPlan;
 
     public Tenant() {}
 
-    public Tenant(String name, String databaseName, SubscriptionPlan subscriptionPlan) {
+
+    public Tenant(String name, String databaseName, String tenantKey, SubscriptionPlan subscriptionPlan) {
         this.name = name;
         this.databaseName = databaseName;
+        this.tenantKey = tenantKey;
         this.subscriptionPlan = subscriptionPlan;
     }
 
     public Tenant(String name, String databaseName) {
         this.name = name;
         this.databaseName = databaseName;
+    }
+
+    public String getTenantKey() {
+        return tenantKey;
+    }
+
+    public void setTenantKey(String tenantKey) {
+        this.tenantKey = tenantKey;
     }
 
     public SubscriptionPlan getSubscriptionPlan() {

@@ -2,7 +2,9 @@ package org.saas.tenant.controller;
 
 import jakarta.validation.Valid;
 import org.saas.core.domain.SubscriptionInfo;
+import org.saas.tenant.dto.TenantFromKeyResponse;
 import org.saas.tenant.dto.TenantRequest;
+import org.saas.tenant.dto.TenantResolveRequest;
 import org.saas.tenant.dto.TenantResponse;
 import org.saas.tenant.service.TenantService;
 import org.springframework.http.ResponseEntity;
@@ -56,5 +58,11 @@ public class TenantController {
     @GetMapping("/internal/{schema}/info")
     public ResponseEntity<SubscriptionInfo> getTenantInfo(@PathVariable("schema") String schema) {
         return ResponseEntity.ok(tenantService.getTenantInfoBySchema(schema));
+    }
+
+    @PostMapping("/resolve-tenant")
+    public ResponseEntity<TenantFromKeyResponse> resolveTenant(@RequestBody TenantResolveRequest request) {
+        return ResponseEntity.ok(tenantService.getTenantNameFromKey(request.accessKey()));
+
     }
 }

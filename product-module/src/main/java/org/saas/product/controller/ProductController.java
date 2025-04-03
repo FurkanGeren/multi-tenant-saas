@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -29,4 +31,21 @@ public class ProductController {
         ProductResponse created = productService.createProduct(request);
         return ResponseEntity.ok(created);
     }
+
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MODERATOR')")
+    @ModuleAccess(ModuleType.USER)
+    public ResponseEntity<List<ProductResponse>> getAll() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MODERATOR')")
+    @ModuleAccess(ModuleType.USER)
+    public ResponseEntity<ProductResponse> getById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(productService.getByIdProduct(id));
+    }
+
+
 }
