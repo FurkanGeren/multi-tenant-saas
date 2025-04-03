@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@ComponentScan(
-        basePackages = {"org.saas.core", "org.saas.audit"}
-)
+@ComponentScan(basePackages = {
+        "org.saas.core",
+        "org.saas.audit"
+}, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.saas\\.core\\.security\\..*"))
 public class AuditModuleApplication {
 
     public static void main(String[] args) {

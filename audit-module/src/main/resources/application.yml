@@ -32,5 +32,8 @@ spring:
 
 security:
   jwt:
-    secret: "B6FQT28Pu2Nn73FYSdZUMCByFB4BwgaqGH33ACJ6jFdJ8J8NSMEwFMdBdtudsAzLTgEoDDop5zBXjwhsms4UgsgBXEkQW768Q232GTyB4FC6A3umwJhzrMSwkeCPX2e8GnHusx2AxP5K29b5JCkDQNNet5L2S7aJzWRB8R9E5edeDwNSdUMLJhpApuYgEGbBnxyMbUzRUPmFJbcZEJALot2opWfmcGTYW4tg4Q8THpCTAqGfm6eQwxJjbM2N6PeT"
+    enabled: false
 
+logging:
+  level:
+    org.springframework.boot.autoconfigure.condition: DEBUG

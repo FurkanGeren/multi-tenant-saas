@@ -15,7 +15,6 @@ import java.util.Map;
 public class SecurityExceptionHandler {
 
 
-    @Profile("security")
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex) {
         return ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN).body(
@@ -26,7 +25,6 @@ public class SecurityExceptionHandler {
         );
     }
 
-    @Profile("security")
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException ex) {
         return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(
