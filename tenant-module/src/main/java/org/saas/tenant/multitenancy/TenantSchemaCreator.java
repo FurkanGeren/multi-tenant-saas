@@ -1,10 +1,12 @@
 package org.saas.tenant.multitenancy;
 
+import jakarta.persistence.Entity;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator;
+import org.reflections.Reflections;
 import org.saas.core.domain.*;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +15,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @Component
@@ -54,12 +56,12 @@ public class TenantSchemaCreator {
             MetadataSources metadataSources = new MetadataSources(registry);
 
 
-            metadataSources.addAnnotatedClass(User.class);
-            metadataSources.addAnnotatedClass(Role.class);
-            metadataSources.addAnnotatedClass(AuditLog.class);
-            metadataSources.addAnnotatedClass(Product.class);
-            metadataSources.addAnnotatedClass(ProductAttribute.class);
-            metadataSources.addAnnotatedClass(AttributeDefinition.class);
+            Reflections reflections = new Reflections("org.saas.core.domain"); // domain paketine göre değiştir
+            Set<Class<?>> entityClasses = reflections.getTypesAnnotatedWith(Entity.class);
+
+            for (Class<?> entity : entityClasses) {
+                metadataSources.addAnnotatedClass(entity);
+            }
 
 
 

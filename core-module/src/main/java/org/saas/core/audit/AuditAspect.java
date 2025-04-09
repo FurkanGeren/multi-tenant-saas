@@ -3,6 +3,7 @@ package org.saas.core.audit;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.saas.core.annotation.Auditable;
@@ -24,8 +25,8 @@ public class AuditAspect {
 
 
 
-    @AfterReturning(pointcut = "@annotation(org.saas.core.annotation.Auditable)", returning = "result")
-    public void logAudit(JoinPoint joinPoint, Object result) {
+    @AfterReturning(pointcut = "@annotation(org.saas.core.annotation.Auditable)")
+    public void logAudit(JoinPoint joinPoint) {
         System.out.println("🚨 AuditAspect tetiklendi");
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -35,12 +36,20 @@ public class AuditAspect {
             String actor =  ActorContext.getActor() != null ? ActorContext.getActor() : getCurrentActor();
             String action = auditable.action();
             String resource = auditable.resource();
-            auditLogger.log(actor, action, resource, "", TenantContext.getTenantSchema());
+
+            String schema = TenantContext.getTenantSchema();
+
+
+            System.out.println("🎯 Logging audit: actor=" + actor + ", action=" + auditable.action() +
+                    ", resource=" + auditable.resource() + ", tenant=" + schema);
+
+            auditLogger.log(actor, action, resource, "", schema);
         }
+
     }
 
     private String getCurrentActor() {
-        return "system";
+        return "SYSTEM";
     }
 
 }

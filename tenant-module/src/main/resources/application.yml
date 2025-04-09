@@ -4,7 +4,8 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   jpa:
     hibernate:
       ddl-auto: create

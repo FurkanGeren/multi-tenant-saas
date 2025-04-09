@@ -8,6 +8,7 @@ import org.saas.product.dto.AttributeDefinitionResponse;
 import org.saas.product.dto.CreateAttributeRequest;
 import org.saas.product.service.AttributeDefinitionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class AttributeDefinitionController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @Auditable(action = "CREATE", resource = "AttributeDefinition")
     @ModuleAccess(ModuleType.USER)
     public ResponseEntity<AttributeDefinitionResponse> create(@RequestBody @Valid CreateAttributeRequest request) {

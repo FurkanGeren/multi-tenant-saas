@@ -3,9 +3,11 @@ package org.saas.product.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.saas.core.context.ActorContext;
 import org.saas.core.context.TenantContext;
 import org.saas.core.domain.AttributeDefinition;
 
+import org.saas.core.utils.JwtUtil;
 import org.saas.product.dto.AttributeDefinitionResponse;
 import org.saas.product.dto.CreateAttributeRequest;
 import org.saas.product.repository.AttributeDefinitionRepository;
@@ -19,10 +21,12 @@ public class AttributeDefinitionServiceImpl implements AttributeDefinitionServic
 
     private final AttributeDefinitionRepository repository;
     private final ObjectMapper objectMapper;
+    private final JwtUtil jwtUtil;
 
-    public AttributeDefinitionServiceImpl(AttributeDefinitionRepository repository, ObjectMapper objectMapper) {
+    public AttributeDefinitionServiceImpl(AttributeDefinitionRepository repository, ObjectMapper objectMapper, JwtUtil jwtUtil) {
         this.repository = repository;
         this.objectMapper = objectMapper;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -35,6 +39,8 @@ public class AttributeDefinitionServiceImpl implements AttributeDefinitionServic
         def.setLabel(request.label());
         def.setType(request.type());
         def.setOptionsJson(serialize(request.options()));
+
+        ActorContext.setActor(jwtUtil.extractUsername());
 
         repository.save(def);
 

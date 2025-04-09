@@ -1,0 +1,25 @@
+server:
+    port: 8090
+
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:5433/db_multi_tenant
+        username: postgres
+        password: postgres
+        driver-class-name: org.postgresql.Driver
+    autoconfigure:
+        exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                multiTenancy: SCHEMA
+                multi_tenant_connection_provider: org.saas.core.tenant.SchemaBasedMultiTenantConnectionProvider
+                current_tenant_identifier_resolver: org.saas.core.tenant.SchemaTenantIdentifierResolver
+
+security:
+    jwt:
+        secret: "B6FQT28Pu2Nn73FYSdZUMCByFB4BwgaqGH33ACJ6jFdJ8J8NSMEwFMdBdtudsAzLTgEoDDop5zBXjwhsms4UgsgBXEkQW768Q232GTyB4FC6A3umwJhzrMSwkeCPX2e8GnHusx2AxP5K29b5JCkDQNNet5L2S7aJzWRB8R9E5edeDwNSdUMLJhpApuYgEGbBnxyMbUzRUPmFJbcZEJALot2opWfmcGTYW4tg4Q8THpCTAqGfm6eQwxJjbM2N6PeT"
+        enabled: true

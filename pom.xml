@@ -19,11 +19,12 @@
         <module>reporting-module</module>
         <module>audit-module</module>
         <module>product-module</module>
+        <module>order-module</module>
     </modules>
 
     <!-- Genel Bağımlılık Versiyonları -->
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <spring.boot.version>3.2.4</spring.boot.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
     </properties>
