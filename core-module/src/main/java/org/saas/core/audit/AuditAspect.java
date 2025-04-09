@@ -46,6 +46,8 @@ public class AuditAspect {
             auditLogger.log(actor, action, resource, "", schema);
         }
 
+        TenantContext.clear();
+
     }
 
     private String getCurrentActor() {

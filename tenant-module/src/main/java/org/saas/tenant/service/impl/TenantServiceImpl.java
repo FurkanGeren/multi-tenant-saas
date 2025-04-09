@@ -51,9 +51,6 @@ public class TenantServiceImpl implements TenantService {
         SubscriptionPlan subscriptionPlan = subscriptionPlanRepository.findById(request.subscriptionPlanId())
                 .orElseThrow(() -> new BusinessException("Geçersiz abonelik planı."));
 
-        // 3. Şema oluştur
-  //      entityManager.createNativeQuery("CREATE SCHEMA IF NOT EXISTS " + request.databaseName())
-   //             .executeUpdate();
 
 
         // 4. Tenant'ı oluştur
@@ -73,7 +70,7 @@ public class TenantServiceImpl implements TenantService {
         TenantContext.setTenantSchema(request.databaseName());
 
         // 6. Tabloları oluştur
-        Map<String, Object> settings = Map.of(
+        Map<String, Object> hibernateSettings = Map.of(
                 "hibernate.connection.driver_class", "org.postgresql.Driver",
                 "hibernate.connection.url", "jdbc:postgresql://localhost:5433/db_multi_tenant",
                 "hibernate.connection.username", "postgres",
@@ -81,11 +78,13 @@ public class TenantServiceImpl implements TenantService {
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect"
         );
 
-        tenantSchemaCreator.createSchema(request.databaseName(), new HashMap<>(settings));
+        tenantSchemaCreator.createSchema(request.databaseName(), new HashMap<>(hibernateSettings));
 
         // 7. TenantContext temizle
         TenantContext.clear();
-        System.out.println("Tenant oluşturuldu: " + saved.getName());
+
+        System.out.println("✅ Tenant oluşturuldu: " + saved.getName());
+
         // 8. TenantResponse döndür
         return new TenantResponse(
                 saved.getId(),

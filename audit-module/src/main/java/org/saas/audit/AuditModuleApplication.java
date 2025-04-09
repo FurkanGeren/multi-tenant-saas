@@ -5,13 +5,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
-@EnableJpaAuditing
-@ComponentScan(basePackages = {
+@SpringBootApplication(scanBasePackages = {
         "org.saas.core",
         "org.saas.audit"
-}, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.saas\\.core\\.security\\..*"))
+})
+@EnableJpaAuditing
+@EnableJpaRepositories
 public class AuditModuleApplication {
 
     public static void main(String[] args) {

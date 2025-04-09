@@ -5,13 +5,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
-@EnableAspectJAutoProxy
-@ComponentScan(basePackages = {
-        "org.saas.auth",
-        "org.saas.core"
+
+@SpringBootApplication(scanBasePackages = {
+        "org.saas.core",
+        "org.saas.auth"
 })
+@EnableJpaAuditing
+@EnableJpaRepositories
 @EnableFeignClients(basePackages = "org.saas.auth.client")
 public class AuthModuleApplication {
 

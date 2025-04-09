@@ -6,12 +6,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+
 @SpringBootApplication(scanBasePackages = {
         "org.saas.core",
         "org.saas.order"
 })
 @EnableJpaAuditing
-@ComponentScan(basePackages = {"org.saas.core", "org.saas.order"})
 @EnableJpaRepositories
 public class OrderModuleApplication {
 

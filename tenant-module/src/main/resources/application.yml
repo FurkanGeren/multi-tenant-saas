@@ -1,5 +1,7 @@
 spring:
   datasource:
+    hikari:
+      leak-detection-threshold: 3000
     url: jdbc:postgresql://localhost:5433/db_multi_tenant
     username: postgres
     password: postgres
@@ -21,3 +23,18 @@ feign:
       default:
         connectTimeout: 5000
         readTimeout: 5000
+logging:
+  level:
+    org:
+      hibernate:
+        sql: DEBUG
+        type:
+          descriptor:
+            sql: DEBUG
+      saas:
+        core:
+          tenant: DEBUG
+    com:
+      zaxxer:
+        hikari: DEBUG
+

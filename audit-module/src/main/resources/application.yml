@@ -26,7 +26,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         multiTenancy: SCHEMA
         multi_tenant_connection_provider: org.saas.core.tenant.SchemaBasedMultiTenantConnectionProvider
-        current_tenant_identifier_resolver: org.saas.audit.config.SchemaTenantIdentifierResolver
+        current_tenant_identifier_resolver: org.saas.core.tenant.SchemaTenantIdentifierResolver
 
 
 

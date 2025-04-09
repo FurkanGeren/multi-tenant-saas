@@ -3,6 +3,8 @@ package org.saas.order.mapper;
 import org.mapstruct.Mapper;
 import org.saas.core.domain.Order;
 import org.saas.core.domain.OrderItem;
+import org.saas.order.dto.CreateOrderRequest;
+import org.saas.order.dto.OrderItemRequest;
 import org.saas.order.dto.OrderItemResponse;
 import org.saas.order.dto.OrderResponse;
 
@@ -16,4 +18,8 @@ public interface OrderMapper {
     OrderItemResponse toResponse(OrderItem item);
 
     List<OrderItemResponse> toItemResponseList(List<OrderItem> items);
+
+    OrderItem toEntity(OrderItemRequest request);
+
+    List<OrderItem> toEntityList(List<OrderItemRequest> requests);
 }

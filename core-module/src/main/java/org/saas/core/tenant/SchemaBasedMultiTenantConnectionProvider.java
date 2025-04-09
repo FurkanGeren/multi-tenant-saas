@@ -2,31 +2,38 @@ package org.saas.core.tenant;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Primary
 public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
 
-    private final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
-
+    private final HikariDataSource dataSource;
 
     public SchemaBasedMultiTenantConnectionProvider() {
-        createAndAddDataSourceForTenant("public");
-    }
+        this.dataSource = new HikariDataSource();
+        this.dataSource.setJdbcUrl("jdbc:postgresql://localhost:5433/db_multi_tenant");
+        this.dataSource.setUsername("postgres");
+        this.dataSource.setPassword("postgres");
+        this.dataSource.setDriverClassName("org.postgresql.Driver");
 
-    public void addDataSource(String tenantIdentifier, DataSource dataSource) {
-        dataSources.put(tenantIdentifier, dataSource);
+        // 🔧 Pool ayarları
+        this.dataSource.setMaximumPoolSize(30);
+        this.dataSource.setMinimumIdle(1);
+        this.dataSource.setIdleTimeout(15000);
+        this.dataSource.setMaxLifetime(60000);
+        this.dataSource.setPoolName("MainTenantPool");
+
+        System.out.println("✅ [Spring] Ana DataSource başlatıldı. @" + this.hashCode());
     }
 
     @Override
     public Connection getAnyConnection() throws SQLException {
-        if (dataSources.isEmpty()) throw new IllegalStateException("Hiçbir tenant için bağlantı yok.");
-        return dataSources.values().iterator().next().getConnection();
+        return dataSource.getConnection();
     }
 
     @Override
@@ -36,32 +43,11 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
 
     @Override
     public Connection getConnection(Object tenantIdentifier) throws SQLException {
-        String tenantId = tenantIdentifier.toString();
-
-        DataSource dataSource = dataSources.get(tenantId);
-        if (dataSource == null) {
-            // Burada yeni datasource oluştur
-            dataSource = createAndAddDataSourceForTenant(tenantId);
-        }
-
-        return dataSource.getConnection();
+        String schema = tenantIdentifier.toString();
+        Connection connection = getAnyConnection();
+        connection.createStatement().execute("SET search_path TO " + schema);
+        return connection;
     }
-
-    private DataSource createAndAddDataSourceForTenant(String schema) {
-        // Her tenant için ayrı bir schema ama aynı DB
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5433/db_multi_tenant");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("postgres");
-        dataSource.setDriverClassName("org.postgresql.Driver");
-
-        // Tenant'a özel schema'yı set etmek için PostgreSQL'in bu özelliğini kullan
-        dataSource.setConnectionInitSql("SET search_path TO " + schema);
-
-        dataSources.put(schema, dataSource);
-        return dataSource;
-    }
-
 
     @Override
     public void releaseConnection(Object tenantIdentifier, Connection connection) throws SQLException {
@@ -82,8 +68,7 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
     public <T> T unwrap(Class<T> unwrapType) {
         if (isUnwrappableAs(unwrapType)) {
             return unwrapType.cast(this);
-        } else {
-            throw new IllegalArgumentException("Unwrap yapılamıyor: " + unwrapType);
         }
+        throw new IllegalArgumentException("Unwrap yapılamıyor: " + unwrapType);
     }
 }

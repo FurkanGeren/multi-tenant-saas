@@ -22,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
-import static org.saas.core.context.TenantContext.setTenantSchema;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -48,16 +47,8 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderCode(generateOrderCode());
         order.setDescription(request.description());
 
-        List<OrderItem> items = request.items().stream().map(item -> {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProductId(item.productId());
-            orderItem.setProductNameSnapshot(item.productNameSnapshot());
-            orderItem.setPriceSnapshot(item.priceSnapshot());
-            orderItem.setQuantity(item.quantity());
-            orderItem.setOrder(order);
-            return orderItem;
-        }).toList();
-
+        List<OrderItem> items = orderMapper.toEntityList(request.items());
+        items.forEach(i -> i.setOrder(order));
         order.setItems(items);
 
         BigDecimal total = items.stream()
@@ -85,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse getById(Long id) {
         setTenantSchema();
         return orderMapper.toResponse(
-                orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Hata")) // TODO
+                getOrderById(id)
         );
     }
 
@@ -93,8 +84,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void markAsPaid(Long id) {
         setTenantSchema();
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Sipariş bulunamadı")); // TODO
+        Order order = getOrderById(id);
 
         if (order.getStatus() == OrderStatus.PAID) {
             throw new BusinessException("Sipariş zaten ödenmiş.");
@@ -109,8 +99,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void markAsCancelled(Long id) {
         setTenantSchema();
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Sipariş bulunamadı")); // TODO
+        Order order = getOrderById(id);
 
         if (order.getStatus() == OrderStatus.CANCELLED) {
             throw new BusinessException("Sipariş zaten iptal edilmis.");
@@ -121,6 +110,10 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
+    private Order getOrderById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Sipariş bulunamadı")); // TODO
+    }
 
     private String generateOrderCode() {
         String datePart = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE); // 20250409
