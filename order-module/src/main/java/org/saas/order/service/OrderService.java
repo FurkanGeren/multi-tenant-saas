@@ -11,4 +11,8 @@ public interface OrderService {
     List<OrderResponse> getAll();
 
     OrderResponse getById(Long id);
+
+    void markAsPaid(Long id);
+
+    void markAsCancelled(Long id);
 }

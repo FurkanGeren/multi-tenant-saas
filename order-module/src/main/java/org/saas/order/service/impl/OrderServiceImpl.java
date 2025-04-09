@@ -4,6 +4,7 @@ import org.saas.core.context.ActorContext;
 import org.saas.core.context.TenantContext;
 import org.saas.core.domain.Order;
 import org.saas.core.domain.OrderItem;
+import org.saas.core.domain.enums.OrderStatus;
 import org.saas.core.exception.BusinessException;
 import org.saas.core.utils.JwtUtil;
 import org.saas.order.dto.CreateOrderRequest;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
@@ -85,6 +87,38 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toResponse(
                 orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Hata")) // TODO
         );
+    }
+
+    @Override
+    @Transactional
+    public void markAsPaid(Long id) {
+        setTenantSchema();
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Sipariş bulunamadı")); // TODO
+
+        if (order.getStatus() == OrderStatus.PAID) {
+            throw new BusinessException("Sipariş zaten ödenmiş.");
+        }
+
+        order.setStatus(OrderStatus.PAID);
+        order.setPaidAt(LocalDateTime.now());
+        orderRepository.save(order);
+    }
+
+    @Override
+    @Transactional
+    public void markAsCancelled(Long id) {
+        setTenantSchema();
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Sipariş bulunamadı")); // TODO
+
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            throw new BusinessException("Sipariş zaten iptal edilmis.");
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
+        order.setPaidAt(null);
+        orderRepository.save(order);
     }
 
 

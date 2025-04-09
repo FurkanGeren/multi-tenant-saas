@@ -50,5 +50,23 @@ public class OrderController {
     public ResponseEntity<OrderResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.getById(id));
     }
+
+    @PatchMapping("/{id}/pay")
+    @Auditable(action = "PAYMENT_CONFIRMED", resource = "ORDER")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MODERATOR')")
+    @ModuleAccess(ModuleType.USER)
+    public ResponseEntity<Void> markAsPaid(@PathVariable Long id) {
+        orderService.markAsPaid(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/cancel")
+    @Auditable(action = "PAYMENT_CANCELLED", resource = "ORDER")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MODERATOR')")
+    @ModuleAccess(ModuleType.USER)
+    public ResponseEntity<Void> markAsCancelled(@PathVariable Long id) {
+        orderService.markAsCancelled(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
