@@ -122,6 +122,15 @@ public class TenantServiceImpl implements TenantService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<String> getAllSchemas() {
+        return tenantRepository.findAll()
+                .stream()
+                .map(Tenant::getDatabaseName)
+                .toList();
+    }
+
     @Override
     @Transactional(readOnly = true)
     public TenantResponse getTenantById(Long id) {

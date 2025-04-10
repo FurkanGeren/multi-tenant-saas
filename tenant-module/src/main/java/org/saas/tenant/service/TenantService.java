@@ -14,10 +14,11 @@ import java.util.List;
 public interface TenantService {
     TenantResponse createTenant(TenantRequest request);
 
-    @Transactional
     TenantResponse updateTenantSubscription(Long tenantId, Long subscriptionPlanId);
 
     List<TenantResponse> getAllTenants();
+
+    List<String> getAllSchemas();
 
     TenantResponse getTenantById(Long id);
 

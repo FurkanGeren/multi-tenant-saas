@@ -5,16 +5,19 @@ import org.saas.core.domain.Invoice;
 import org.saas.core.domain.Order;
 import org.saas.core.domain.enums.InvoiceStatus;
 import org.saas.core.exception.BusinessException;
+import org.saas.order.client.InvoiceModuleClient;
 import org.saas.order.dto.InvoiceResponse;
 import org.saas.order.mapper.OrderMapper;
 import org.saas.order.repository.InvoiceRepository;
 import org.saas.order.repository.OrderRepository;
 import org.saas.order.service.InvoiceService;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
@@ -26,11 +29,13 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final OrderRepository orderRepository;
     private final OrderMapper  orderMapper;
+    private final InvoiceModuleClient invoiceModuleClient;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, OrderRepository orderRepository, OrderMapper orderMapper) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, OrderRepository orderRepository, OrderMapper orderMapper, InvoiceModuleClient invoiceModuleClient) {
         this.invoiceRepository = invoiceRepository;
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
+        this.invoiceModuleClient = invoiceModuleClient;
     }
 
 
@@ -105,6 +110,30 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
 
+    @Scheduled(cron = "0 0 0 * * *") // Her gece 00:00
+    public void checkInvoices() {
+        List<String> schemas = invoiceModuleClient.getTenantSchemas();
+        for (String schema : schemas) {
+            try {
+                TenantContext.setTenantSchema(schema);
+
+                LocalDate today = LocalDate.now();
+
+                List<Invoice> overdue = invoiceRepository.findByStatusAndDueDateBefore(InvoiceStatus.PENDING, today);
+                overdue.forEach(i -> i.setStatus(InvoiceStatus.OVERDUE));
+
+                invoiceRepository.saveAll(overdue);
+
+                List<Invoice> dueTomorrow = invoiceRepository.findByStatusAndDueDateEquals(InvoiceStatus.PENDING, today.plusDays(1));                almostDue.forEach(invoice -> {
+                    // Bildirim gönder
+                    notificationClient.sendInvoiceReminder(invoice);
+                });
+
+            } finally {
+                TenantContext.clear();
+            }
+        }
+    }
 
     private void setTenantSchema() {
         String schema = TenantContext.getTenantSchema();
