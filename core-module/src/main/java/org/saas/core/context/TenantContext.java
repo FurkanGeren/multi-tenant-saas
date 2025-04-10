@@ -6,7 +6,7 @@ public class TenantContext {
     private static final ThreadLocal<String> currentTenant = new ThreadLocal<>();
 
     public static void setTenantSchema(String schema) {
-        System.out.println("🟡 Tenant set: " + schema);
+        System.out.println("🟡 [" + Thread.currentThread().getName() + "] Tenant set: " + schema);
         currentTenant.set(schema);
     }
 
@@ -15,7 +15,7 @@ public class TenantContext {
     }
 
     public static void clear() {
-        System.out.println("🔵 Tenant cleared");
+        System.out.println("🔵 [" + Thread.currentThread().getName() + "] Tenant cleared");
         currentTenant.remove();
     }
 }

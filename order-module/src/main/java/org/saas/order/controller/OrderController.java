@@ -4,6 +4,7 @@ package org.saas.order.controller;
 import org.saas.core.annotation.Auditable;
 import org.saas.core.annotation.ModuleAccess;
 import org.saas.core.domain.enums.ModuleType;
+import org.saas.order.dto.CancelInvoiceRequest;
 import org.saas.order.dto.CreateOrderRequest;
 import org.saas.order.dto.OrderResponse;
 import org.saas.order.service.OrderService;
@@ -64,7 +65,7 @@ public class OrderController {
     @Auditable(action = "PAYMENT_CANCELLED", resource = "ORDER")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MODERATOR')")
     @ModuleAccess(ModuleType.USER)
-    public ResponseEntity<Void> markAsCancelled(@PathVariable Long id) {
+    public ResponseEntity<Void> markAsCancelled(@PathVariable Long id){
         orderService.markAsCancelled(id);
         return ResponseEntity.noContent().build();
     }
