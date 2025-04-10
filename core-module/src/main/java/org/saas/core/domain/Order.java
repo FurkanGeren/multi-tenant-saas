@@ -33,16 +33,28 @@ public class Order extends Auditable{
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<Invoice> invoices;
+
     public Order() {
     }
 
-    public Order(String orderCode, BigDecimal total, OrderStatus status, LocalDateTime paidAt, String description, List<OrderItem> items) {
+    public Order(String orderCode, BigDecimal total, OrderStatus status, LocalDateTime paidAt, String description, List<OrderItem> items, List<Invoice> invoices) {
         this.orderCode = orderCode;
         this.total = total;
         this.status = status;
         this.paidAt = paidAt;
         this.description = description;
         this.items = items;
+        this.invoices = invoices;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
     }
 
     public String getOrderCode() {

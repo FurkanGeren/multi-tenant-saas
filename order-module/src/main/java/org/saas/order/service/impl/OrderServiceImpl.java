@@ -7,11 +7,13 @@ import org.saas.core.domain.OrderItem;
 import org.saas.core.domain.enums.OrderStatus;
 import org.saas.core.exception.BusinessException;
 import org.saas.core.utils.JwtUtil;
+import org.saas.order.event.OrderCreatedEvent;
 import org.saas.order.dto.CreateOrderRequest;
 import org.saas.order.dto.OrderResponse;
 import org.saas.order.mapper.OrderMapper;
 import org.saas.order.repository.OrderRepository;
 import org.saas.order.service.OrderService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +32,13 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final JwtUtil jwtUtil;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, JwtUtil jwtUtil) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, JwtUtil jwtUtil, ApplicationEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.jwtUtil = jwtUtil;
+        this.eventPublisher = eventPublisher;
     }
 
 
@@ -61,6 +65,9 @@ public class OrderServiceImpl implements OrderService {
         System.out.println("🧾 setActor çağrıldı: " + jwtUtil.extractUsername());
 
         orderRepository.save(order);
+
+        eventPublisher.publishEvent(new OrderCreatedEvent(order.getId(), TenantContext.getTenantSchema()));
+
         return order.getId();
     }
 
