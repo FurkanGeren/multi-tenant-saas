@@ -15,7 +15,10 @@ import org.saas.user.repository.UserRepository;
 import org.saas.user.service.UserService;
 import org.saas.core.utils.JwtUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -81,6 +84,19 @@ public class UserServiceImpl implements UserService {
                 user.getPassword(),
                 user.getUsername(),
                 user.getRole().getRoleName());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<org.saas.core.dto.UserResponse> getModerators(String schema) {
+        System.out.println("Tenant current: " + TenantContext.getTenantSchema());
+        TenantContext.setTenantSchema(schema);
+        System.out.println("Tenant current: " + TenantContext.getTenantSchema());
+
+        List<User> moderators = userRepository.findByRole_RoleNameIgnoreCase("MODERATOR");
+        return moderators.stream()
+                .map(user -> new org.saas.core.dto.UserResponse(user.getId(), user.getUsername(), user.getEmail()))
+                .toList();
     }
 
 }

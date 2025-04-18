@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/multi-tenant-saas.iml" filepath="$PROJECT_DIR$/multi-tenant-saas.iml" />
+      <module fileurl="file://$PROJECT_DIR$/product-module/product.iml" filepath="$PROJECT_DIR$/product-module/product.iml" />
       <module fileurl="file://$PROJECT_DIR$/tenant-module.iml" filepath="$PROJECT_DIR$/tenant-module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/user-module/user.iml" filepath="$PROJECT_DIR$/user-module/user.iml" />
     </modules>
   </component>
 </project>

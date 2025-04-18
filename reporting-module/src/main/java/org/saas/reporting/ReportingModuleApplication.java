@@ -2,8 +2,17 @@ package org.saas.reporting;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "org.saas.core",
+        "org.saas.reporting"
+})
+@EnableJpaAuditing
+@EnableJpaRepositories
+@EnableFeignClients
 public class ReportingModuleApplication {
 
     public static void main(String[] args) {

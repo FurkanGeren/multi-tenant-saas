@@ -12,10 +12,16 @@ import org.springframework.context.annotation.Primary;
 public class RabbitMQConfig {
 
     public static final String AUDIT_QUEUE = "audit.queue";
+    public static final String NOTIFICATION_QUEUE = "notification.reminder";
 
     @Bean
     public Queue auditQueue() {
         return new Queue(AUDIT_QUEUE, true);
+    }
+
+    @Bean
+    public Queue notificationQueue() {
+        return new Queue(NOTIFICATION_QUEUE, true); // durable: true
     }
 
     @Bean

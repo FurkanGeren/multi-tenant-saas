@@ -4,10 +4,12 @@ import org.saas.core.context.TenantContext;
 import org.saas.core.domain.Invoice;
 import org.saas.core.domain.Order;
 import org.saas.core.domain.enums.InvoiceStatus;
+import org.saas.core.event.InvoiceReminderEvent;
 import org.saas.core.exception.BusinessException;
 import org.saas.order.client.InvoiceModuleClient;
 import org.saas.order.dto.InvoiceResponse;
 import org.saas.order.mapper.OrderMapper;
+import org.saas.order.messaging.InvoiceReminderPublisher;
 import org.saas.order.repository.InvoiceRepository;
 import org.saas.order.repository.OrderRepository;
 import org.saas.order.service.InvoiceService;
@@ -30,12 +32,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final OrderRepository orderRepository;
     private final OrderMapper  orderMapper;
     private final InvoiceModuleClient invoiceModuleClient;
+    private final InvoiceReminderPublisher invoiceReminderPublisher;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, OrderRepository orderRepository, OrderMapper orderMapper, InvoiceModuleClient invoiceModuleClient) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, OrderRepository orderRepository, OrderMapper orderMapper, InvoiceModuleClient invoiceModuleClient, InvoiceReminderPublisher invoiceReminderPublisher) {
         this.invoiceRepository = invoiceRepository;
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.invoiceModuleClient = invoiceModuleClient;
+        this.invoiceReminderPublisher = invoiceReminderPublisher;
     }
 
 
@@ -118,16 +122,16 @@ public class InvoiceServiceImpl implements InvoiceService {
                 TenantContext.setTenantSchema(schema);
 
                 LocalDate today = LocalDate.now();
+                System.out.println("🕛 [Tenant: " + schema + "] Bugün: " + today + ", Yarın: " + today.plusDays(1));
+
 
                 List<Invoice> overdue = invoiceRepository.findByStatusAndDueDateBefore(InvoiceStatus.PENDING, today);
                 overdue.forEach(i -> i.setStatus(InvoiceStatus.OVERDUE));
 
                 invoiceRepository.saveAll(overdue);
 
-                List<Invoice> dueTomorrow = invoiceRepository.findByStatusAndDueDateEquals(InvoiceStatus.PENDING, today.plusDays(1));                almostDue.forEach(invoice -> {
-                    // Bildirim gönder
-                    notificationClient.sendInvoiceReminder(invoice);
-                });
+                List<Invoice> dueTomorrow = invoiceRepository.findByStatusAndDueDateEquals(InvoiceStatus.PENDING, today.plusDays(1));
+                dueTomorrow.forEach(invoiceReminderPublisher::publishReminder);
 
             } finally {
                 TenantContext.clear();
