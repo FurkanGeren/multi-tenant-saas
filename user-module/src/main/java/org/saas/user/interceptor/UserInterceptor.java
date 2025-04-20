@@ -20,6 +20,9 @@ public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        String tenant = TenantContext.getTenantSchema();
+        System.out.println(tenant + "Girdi afterCompletion");
         TenantContext.clear();
+        System.out.println(TenantContext.getTenantSchema() + "Girdi afterCompletion");
     }
 }

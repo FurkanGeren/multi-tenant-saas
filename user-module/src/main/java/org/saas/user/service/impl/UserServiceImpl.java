@@ -89,18 +89,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public List<org.saas.core.dto.UserResponse> getModerators(String schema) {
-        try {
-            TenantContext.setTenantSchema(schema); // 🔥 burada olmalı
-            System.out.println("🟡 Service içi tenant: " + TenantContext.getTenantSchema());
+        System.out.println("🟡 Service içi tenant: " + TenantContext.getTenantSchema());
 
 
-            List<User> moderators = userRepository.findByRole_RoleNameIgnoreCase("MODERATOR");
-            return moderators.stream()
-                    .map(user -> new org.saas.core.dto.UserResponse(user.getId(), user.getUsername(), user.getEmail()))
-                    .toList();
-        } finally {
-            TenantContext.clear();
-        }
+        List<User> moderators = userRepository.findByRole_RoleNameIgnoreCase("MODERATOR");
+        return moderators.stream()
+                .map(user -> new org.saas.core.dto.UserResponse(user.getId(), user.getUsername(), user.getEmail()))
+                .toList();
     }
 
 }
